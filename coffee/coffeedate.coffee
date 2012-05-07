@@ -30,9 +30,8 @@ DAYS = [
     "Saturday"]
 
 weekday_num = (d) ->
+    jd = d.toDate()
     d.toDate().getDay()
-    #TODO: Come up with something here.
-    0
 
 fmt_weekday_name = (d) ->
     wd_num = weekday_num(d)
@@ -107,8 +106,6 @@ PARSE_MAPPINGS =
     "%m": [/^[0-9]{1,2}/, (s, d) -> d.month = parseInt(s, 10)]
     "%M": [/^[0-9]{1,2}/, (s, d) -> d.minute = parseInt(s, 10)]
     "%p": [/^[ap]\.?m?\.?/i, (s, d) ->
-        console.log(s.match(/p/))
-        console.log(d.hour)
         if s.match(/p/)
             if d.hour < 12 and d.hour > 0
                 d.hour += 12
@@ -135,10 +132,10 @@ class CoffeeDate
         fmt
 
     toDate: ->
-        new Date(@year, @month, @day, @hour, @minute, @second, @microsecond)
+        new Date(@year, @month-1, @day, @hour, @minute, @second, @microsecond)
 
     mktime: ->
-        Date.UTC(@year, @month, @day, @hour, @minute, @second, @microsecond)
+        Date.UTC(@year, @month-1, @day, @hour, @minute, @second, @microsecond)
 
     @compare: (d1, d2) ->
         d1.mktime() - d2.mktime()
@@ -156,9 +153,7 @@ class CoffeeDate
                 continue
 
             tok = fmt[ii..ii + 1]
-            console.log(tok)
             if PARSE_MAPPINGS.hasOwnProperty(tok)
-                console.log("BEFORE: '" + s + "', '" + fmt + "'")
                 [fmt_re, fmt_fn] = PARSE_MAPPINGS[tok]
                 match = s.substr(ii).match(fmt_re)
                 if not match
@@ -171,7 +166,6 @@ class CoffeeDate
                 # Restart scan.
                 ii = 0
                 len = fmt.length
-                console.log("AFTER: '" + s + "', '" + fmt + "'")
 
         d
 

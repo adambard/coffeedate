@@ -14,8 +14,9 @@ MONTHS = ["", "January", "February", "March", "April", "May", "June", "July", "A
 DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 weekday_num = function(d) {
-  d.toDate().getDay();
-  return 0;
+  var jd;
+  jd = d.toDate();
+  return d.toDate().getDay();
 };
 
 fmt_weekday_name = function(d) {
@@ -187,8 +188,6 @@ PARSE_MAPPINGS = {
   ],
   "%p": [
     /^[ap]\.?m?\.?/i, function(s, d) {
-      console.log(s.match(/p/));
-      console.log(d.hour);
       if (s.match(/p/)) {
         if (d.hour < 12 && d.hour > 0) return d.hour += 12;
       } else if (d.hour === 12) {
@@ -241,11 +240,11 @@ CoffeeDate = (function() {
   };
 
   CoffeeDate.prototype.toDate = function() {
-    return new Date(this.year, this.month, this.day, this.hour, this.minute, this.second, this.microsecond);
+    return new Date(this.year, this.month - 1, this.day, this.hour, this.minute, this.second, this.microsecond);
   };
 
   CoffeeDate.prototype.mktime = function() {
-    return Date.UTC(this.year, this.month, this.day, this.hour, this.minute, this.second, this.microsecond);
+    return Date.UTC(this.year, this.month - 1, this.day, this.hour, this.minute, this.second, this.microsecond);
   };
 
   CoffeeDate.compare = function(d1, d2) {
@@ -263,9 +262,7 @@ CoffeeDate = (function() {
         continue;
       }
       tok = fmt.slice(ii, (ii + 1) + 1 || 9e9);
-      console.log(tok);
       if (PARSE_MAPPINGS.hasOwnProperty(tok)) {
-        console.log("BEFORE: '" + s + "', '" + fmt + "'");
         _ref = PARSE_MAPPINGS[tok], fmt_re = _ref[0], fmt_fn = _ref[1];
         match = s.substr(ii).match(fmt_re);
         if (!match) {
@@ -276,7 +273,6 @@ CoffeeDate = (function() {
         fmt = fmt.replace(tok, rep_s);
         ii = 0;
         len = fmt.length;
-        console.log("AFTER: '" + s + "', '" + fmt + "'");
       }
     }
     return d;

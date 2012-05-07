@@ -4,7 +4,7 @@ FMT_PAIRS =
     "Mar 12, 1985": "%b %d, %Y",
     "12:01 pm": "%I:%M %p"
     "7804021230": "%y%m%D%H%M"
-    "Sun, May 6, 2012": "%a, %B %d, %Y"
+    "Mon, May 7, 2012": "%a, %B %d, %Y"
 
 describe "CoffeeDate", ->
     it "Formats dates as expected", ->
