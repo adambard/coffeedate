@@ -30,8 +30,7 @@ DAYS = [
     "Saturday"]
 
 weekday_num = (d) ->
-    jd = d.toDate()
-    d.toDate().getDay()
+    d.todate().getDay()
 
 fmt_weekday_name = (d) ->
     wd_num = weekday_num(d)
@@ -45,6 +44,9 @@ fmt_month_name = (d) ->
         throw("Invalid month: #{d.month}")
     MONTHS[d.month]
 
+# To add a mapping pick a token (% plus a letter), and provide
+# a function that accepts a CoffeeDate instance, and outputs a
+# string to replace the token with.
 FORMAT_MAPPINGS =
     "%a": (d) -> fmt_weekday_name(d)[0..2]
     "%A": fmt_weekday_name
@@ -72,7 +74,7 @@ FORMAT_MAPPINGS =
     "%Y": (d) -> zeropad(d.year, 4)
     "%%": (d) -> '%'
 
-parse_not_implemented = (s, d) ->
+parse_noop = (s, d) ->
 
 parse_month_abbr = (s, d) ->
     d.month = switch s.toLowerCase()
@@ -91,8 +93,8 @@ parse_month_abbr = (s, d) ->
         else throw("Invalid month: #{s}")
 
 PARSE_MAPPINGS =
-    "%a": [/^(mon|tue|wed|thu|fri|sat|sun)/i, parse_not_implemented]
-    "%A": [/^(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i, parse_not_implemented]
+    "%a": [/^(mon|tue|wed|thu|fri|sat|sun)/i, parse_noop]
+    "%A": [/^(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i, parse_noop]
 
     "%b": [/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i, parse_month_abbr]
     "%B": [/^(january|february|march|april|may|june|july|august|september|october|november|december)/i, (s, d) -> parse_month_abbr(s[0..2], d)]
@@ -120,6 +122,7 @@ PARSE_MAPPINGS =
         else
             d.year = 2000 + yr]
     "%Y": [/^[0-9]{4}/, (s, d) -> d.year = parseInt(s, 10)]
+    "%%": [/^%/, parse_noop]
 
 
 class CoffeeDate
@@ -131,7 +134,7 @@ class CoffeeDate
             fmt = fmt.replace(s, fn(@))
         fmt
 
-    toDate: ->
+    todate: ->
         new Date(@year, @month-1, @day, @hour, @minute, @second, @microsecond)
 
     mktime: ->

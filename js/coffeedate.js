@@ -1,5 +1,5 @@
 (function() {
-  var CoffeeDate, DAYS, FORMAT_MAPPINGS, MONTHS, PARSE_MAPPINGS, fmt_month_name, fmt_weekday_name, parse_month_abbr, parse_not_implemented, weekday_num, zeropad;
+  var CoffeeDate, DAYS, FORMAT_MAPPINGS, MONTHS, PARSE_MAPPINGS, fmt_month_name, fmt_weekday_name, parse_month_abbr, parse_noop, weekday_num, zeropad;
 
   zeropad = function(num, deg) {
     var s;
@@ -15,9 +15,7 @@
   DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   weekday_num = function(d) {
-    var jd;
-    jd = d.toDate();
-    return d.toDate().getDay();
+    return d.todate().getDay();
   };
 
   fmt_weekday_name = function(d) {
@@ -98,7 +96,7 @@
     }
   };
 
-  parse_not_implemented = function(s, d) {};
+  parse_noop = function(s, d) {};
 
   parse_month_abbr = function(s, d) {
     return d.month = (function() {
@@ -134,8 +132,8 @@
   };
 
   PARSE_MAPPINGS = {
-    "%a": [/^(mon|tue|wed|thu|fri|sat|sun)/i, parse_not_implemented],
-    "%A": [/^(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i, parse_not_implemented],
+    "%a": [/^(mon|tue|wed|thu|fri|sat|sun)/i, parse_noop],
+    "%A": [/^(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i, parse_noop],
     "%b": [/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i, parse_month_abbr],
     "%B": [
       /^(january|february|march|april|may|june|july|august|september|october|november|december)/i, function(s, d) {
@@ -216,7 +214,8 @@
       /^[0-9]{4}/, function(s, d) {
         return d.year = parseInt(s, 10);
       }
-    ]
+    ],
+    "%%": [/^%/, parse_noop]
   };
 
   CoffeeDate = (function() {
@@ -240,7 +239,7 @@
       return fmt;
     };
 
-    CoffeeDate.prototype.toDate = function() {
+    CoffeeDate.prototype.todate = function() {
       return new Date(this.year, this.month - 1, this.day, this.hour, this.minute, this.second, this.microsecond);
     };
 
