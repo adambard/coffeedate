@@ -15,7 +15,7 @@
   DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   weekday_num = function(d) {
-    return d.todate().getDay();
+    return d.to_date().getDay();
   };
 
   fmt_weekday_name = function(d) {
@@ -239,7 +239,7 @@
       return fmt;
     };
 
-    CoffeeDate.prototype.todate = function() {
+    CoffeeDate.prototype.to_date = function() {
       return new Date(this.year, this.month - 1, this.day, this.hour, this.minute, this.second, this.microsecond);
     };
 
@@ -266,12 +266,11 @@
           _ref = PARSE_MAPPINGS[tok], fmt_re = _ref[0], fmt_fn = _ref[1];
           match = s.substr(ii).match(fmt_re);
           if (!match) {
-            throw "Error parsing date (" + fmt_re + " did not match " + (s.substr(ii));
+            throw "Error parsing date (" + fmt_re + " did not match " + (s.substr(ii)) + ")";
           }
           rep_s = match[0];
           fmt_fn(match[0], d);
           fmt = fmt.replace(tok, rep_s);
-          ii = 0;
           len = fmt.length;
         }
       }

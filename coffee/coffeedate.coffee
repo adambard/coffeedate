@@ -30,7 +30,7 @@ DAYS = [
     "Saturday"]
 
 weekday_num = (d) ->
-    d.todate().getDay()
+    d.to_date().getDay()
 
 fmt_weekday_name = (d) ->
     wd_num = weekday_num(d)
@@ -134,7 +134,7 @@ class CoffeeDate
             fmt = fmt.replace(s, fn(@))
         fmt
 
-    todate: ->
+    to_date: ->
         new Date(@year, @month-1, @day, @hour, @minute, @second, @microsecond)
 
     mktime: ->
@@ -160,14 +160,13 @@ class CoffeeDate
                 [fmt_re, fmt_fn] = PARSE_MAPPINGS[tok]
                 match = s.substr(ii).match(fmt_re)
                 if not match
-                    throw("Error parsing date (#{fmt_re} did not match #{s.substr(ii)}")
+                    throw("Error parsing date (#{fmt_re} did not match #{s.substr(ii)})")
 
                 rep_s = match[0]
                 fmt_fn(match[0], d) # Update date
                 fmt = fmt.replace(tok, rep_s) # Update format string
 
                 # Restart scan.
-                ii = 0
                 len = fmt.length
 
         d
