@@ -52,6 +52,7 @@ FORMAT_MAPPINGS =
     "%A": fmt_weekday_name
     "%b": (d) -> fmt_month_name(d)[0..2]
     "%B": fmt_month_name
+    "%c": (d) -> zeropad(d.year % 100, 2)
     "%d": (d) -> d.day.toString()
     "%D": (d) -> zeropad(d.day, 2)
     "%f": (d) -> zeropad(d.microsecond, 6)
@@ -92,12 +93,22 @@ parse_month_abbr = (s, d) ->
         when "dec" then 12
         else throw("Invalid month: #{s}")
 
+year_parser = (base, pivot) ->
+    [/^[0-9]{1,2}/, (s, d) ->
+        yr = parseInt(s, 10)
+        if yr > pivot
+            d.year = base + yr
+        else
+            d.year = base + 100 + yr
+    ]
+
 PARSE_MAPPINGS =
     "%a": [/^(mon|tue|wed|thu|fri|sat|sun)/i, parse_noop]
     "%A": [/^(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i, parse_noop]
 
     "%b": [/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i, parse_month_abbr]
     "%B": [/^(january|february|march|april|may|june|july|august|september|october|november|december)/i, (s, d) -> parse_month_abbr(s[0..2], d)]
+    "%c": year_parser(2000, 0)
     "%d": [/^[0-9]{1,2}/, (s, d) -> d.day = parseInt(s, 10)]
     "%D": [/^[0-9]{1,2}/, (s, d) -> d.day = parseInt(s, 10)]
     "%f": [/^[0-9]+/, (s, d) -> d.microsecond = parseInt(s, 10)]
@@ -115,17 +126,17 @@ PARSE_MAPPINGS =
             d.hour = 0
     ]
     "%S": [/^[0-9]{1,2}/, (s, d) -> d.second = parseInt(s, 10)]
-    "%y": [/^[0-9]{2}/, (s, d) ->
-        yr = parseInt(s, 10)
-        if yr > 70
-            d.year = 1900 + yr
-        else
-            d.year = 2000 + yr]
+    "%y": year_parser(1900, 70)
     "%Y": [/^[0-9]{4}/, (s, d) -> d.year = parseInt(s, 10)]
     "%%": [/^%/, parse_noop]
 
 
 class CoffeeDate
+
+    @set_parser: (fmt, spec) ->
+        PARSE_MAPPINGS[fmt] = spec
+
+    @year_parser: year_parser
 
     constructor: (@year=1970, @month=1, @day=1, @hour=0, @minute=0, @second=0, @microsecond=0) ->
 
@@ -171,8 +182,7 @@ class CoffeeDate
 
         d
 
-if typeof(window) != "undefined"
-    window.CoffeeDate = CoffeeDate
-
 if typeof(exports) != "undefined"
     exports.CoffeeDate = CoffeeDate
+else
+    window.CoffeeDate = CoffeeDate
