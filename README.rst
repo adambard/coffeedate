@@ -77,7 +77,7 @@ It accepts two arguments:
 `f` should take two arguments. The first argument is the matched string, and the second one is the CoffeeDate object
 we're applying the match to.
 
-Here's an example:
+Here's an example::
 
     // We currently pivot on 1970
     d = CoffeeDate.parse('10', '%y');
@@ -93,7 +93,7 @@ Here's an example:
     d.year == 1990
 
 Changing the base century and pivot for 2-digit years is by far the most common use for this,
-so CoffeeDate also has a helper method called `year_parser` to help:
+so CoffeeDate also has a helper method called `year_parser` to help::
 
     // Same as above
     CoffeeDate.set_parser("%y", CoffeeDate.year_parser(1900, 0))
