@@ -92,6 +92,15 @@ Here's an example:
     d = CoffeeDate.parse('90', '%y');
     d.year == 1990
 
+Changing the base century and pivot for 2-digit years is by far the most common use for this,
+so CoffeeDate also has a helper method called `year_parser` to help:
+
+    // Same as above
+    CoffeeDate.set_parser("%y", CoffeeDate.year_parser(1900, 0))
+
+    // 1650-1749
+    CoffeeDate.set_parser("%y", CoffeeDate.year_parser(1600, 50))
+
 
 License
 ========
