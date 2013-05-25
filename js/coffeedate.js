@@ -85,6 +85,9 @@
     "%w": function(d) {
       return weekday_num(d).toString();
     },
+    "%ycc": function(d) {
+      return zeropad(d.year % 100, 2);
+    },
     "%y": function(d) {
       return zeropad(d.year % 100, 2);
     },
@@ -197,6 +200,17 @@
     "%S": [
       /^[0-9]{1,2}/, function(s, d) {
         return d.second = parseInt(s, 10);
+      }
+    ],
+    "%ycc": [ // accomplishes current century mapping to 2-digit year ( ycc = abbreviate('yearCurrentCentury') )
+      /^[0-9]{2}/, function(s, d) {
+        var yr;
+        var dt;
+        dt = new Date();
+        var cyr;
+        cyr = dt.getFullYear().toString().substr(0,2); // current year first two digits
+        yr = parseInt( (cyr+s), 10); // first two digits of current year as string appended to 2-digit year
+        return d.year = yr;
       }
     ],
     "%y": [
