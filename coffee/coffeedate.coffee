@@ -171,4 +171,8 @@ class CoffeeDate
 
         d
 
-window.CoffeeDate = CoffeeDate
+if typeof(window) != "undefined"
+    window.CoffeeDate = CoffeeDate
+
+if typeof(exports) != "undefined"
+    exports.CoffeeDate = CoffeeDate

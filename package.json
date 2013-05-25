@@ -1,0 +1,8 @@
+{
+    "name": "coffeedate",
+    "version": "0.1.6",
+    "author": "Adam Bard <adam@adambard.com>",
+    "description": "A date-formatting library for js/coffeescript",
+    "license": "MIT",
+    "main": "./js/coffeedate"
+}
